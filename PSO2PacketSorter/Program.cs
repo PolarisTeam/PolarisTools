@@ -6,12 +6,19 @@ namespace PSO2PacketSorter
 {
     class Program
     {
+        enum PacketType
+        {
+            None,
+            Client,
+            Server
+        }
+
         static char seperator = Path.DirectorySeparatorChar;
         static string dirName = "_packets";
         static string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         static int total = 0;
         static int current = 0;
-        
+
         static void Main(string[] args)
         {
             Console.WriteLine("Sorting packets...");
@@ -62,6 +69,7 @@ namespace PSO2PacketSorter
                         string newFile = string.Empty;
                         string type = string.Empty;
                         string name = string.Empty;
+                        PacketType packetType = PacketType.None;
 
                         // We have a few different naming conventions, let's try and cover all of them
                         if (Path.GetFileName(file).Contains("-"))
@@ -70,6 +78,12 @@ namespace PSO2PacketSorter
                         {
                             string[] split = Path.GetFileName(file).Split('.');
                             type = (split[1] + "-" + split[2]).ToUpper();
+
+                            // Polaris appends C and S to denote client versus server packets
+                            if (split[3] == "S")
+                                packetType = PacketType.Client;
+                            else if (split[3] == "C")
+                                packetType = PacketType.Server;
                         }
 
                         // Check to see if we have a folder for this type already
@@ -80,7 +94,20 @@ namespace PSO2PacketSorter
                         timeString = time.ToString("MM-dd-yy.HH-mm-ss.fff");
 
                         // Get the new name
-                        name = string.Format("{0}.{1}", type, timeString) + ".bin";
+                        switch (packetType)
+                        {
+                            case PacketType.None:
+                                name = string.Format("{0}.{1}", type, timeString) + ".bin";
+                                break;
+                            case PacketType.Client:
+                                name = string.Format("{0}.C.{1}", type, timeString) + ".bin";
+                                break;
+                            case PacketType.Server:
+                                name = string.Format("{0}.S.{1}", type, timeString) + ".bin";
+                                break;
+                            default:
+                                throw new Exception("Unknown packet type");
+                        }
                         newFile = currentDir + seperator + dirName + seperator + type + seperator + name;
 
                         // Progress
