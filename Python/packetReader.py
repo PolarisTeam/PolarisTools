@@ -328,11 +328,26 @@ def readSetAreaPacket(packet):
 
 	print('')
 
+def readInteractionPacket(packet):
+	reader = PacketReader(packet)
 
-for name in glob.iglob('./*.3-24.*.bin'):
+	print('Packet Header: ' + repr(reader.readHeader()))
+	print('Entity Header: ' + repr(reader.readEntityHeader())) # 20
+	print('Entity Header: ' + repr(reader.readEntityHeader())) # 32
+	print('????		  :' + hexStr(reader.read(4)))
+	print('????		  :' + hexStr(reader.read(12)))
+	print('????		  :' + hexStr(reader.read(12)))
+	print('????		  :' + hexStr(reader.read(1)))
+	print('????		  :' + hexStr(reader.read(1)))
+	print('????		  :' + hexStr(reader.read(1)))
+	print('????		  :' + hexStr(reader.read(1)))
+	print('Command    :' + repr(reader.readStringASCII(0xD711, 0xCA)))
+
+
+for name in glob.iglob('./*.4-14.*.bin'):
 	print('[[ %s ]]' % name)
 	with open(name, 'rb') as f:
-		readSetAreaPacket(f.read())
+		readInteractionPacket(f.read())
 #
 #
 #for name in glob.iglob('packets3/*.7-0.*.bin'):
