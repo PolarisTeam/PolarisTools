@@ -1,0 +1,31 @@
+#include "standard-types.hsl"
+
+struct PacketHeader
+{
+    DWORD          packetSize;
+    BYTE           packetType;
+    BYTE           packetSubtype;
+    BYTE           packetFlag;
+    BYTE           headerPad;
+} PacketHeader;
+
+
+struct EntityHeader
+{
+    DWORD          entityID;
+    DWORD          unknown4;
+    WORD           entityType;
+    WORD           unknownA;
+} EntityHeader;
+
+
+struct EntityPosition
+{
+    WORD           A;
+    WORD           B;
+    WORD           C;
+    WORD           facingAngle;
+    WORD           X;
+    WORD           Y;
+    WORD           Z;
+} EntityPosition;
